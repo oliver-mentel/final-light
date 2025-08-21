@@ -275,6 +275,31 @@
             font-style: italic;
             color: #718096;
         }
+
+        .buy-me-coffee {
+            text-align: center;
+            margin: 30px;
+            padding-top: 20px;
+        }
+
+        .bmc-button {
+            height: 45px !important;
+            width: auto !important;
+            max-width: 170px;
+            transition: transform 0.3s ease;
+        }
+
+        .bmc-button:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .bmc-button {
+                height: 40px !important;
+                max-width: 150px;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -415,6 +440,11 @@
             </div>
         </div>
     </div>
+</div>
+<div class="buy-me-coffee">
+    <a href="https://buymeacoffee.com/oliver.mentel" target="_blank" rel="noopener noreferrer">
+        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" class="bmc-button">
+    </a>
 </div>
 <script>
     const sunriseSunsetApiBase = "https://api.sunrise-sunset.org/json";
