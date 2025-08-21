@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Final Light</title>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io//favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io//favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f0f4fb;
+            color: #2d3748;
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #1a202c;
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            color: #4a5568;
+            margin-top: 0;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            margin: 20px 0 15px;
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            display: block;
+            color: #2c5282;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .value {
+            color: #2d3748;
+            font-size: 1em;
+            font-weight: 400;
+        }
+
+        select, input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background-color: #edf2f7;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        select:focus, input[type="text"]:focus, input[type="date"]:focus {
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+            outline: none;
+        }
+
+        .location-input-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #777;
+            padding: 5px;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            list-style: none;
+            display: none;
+            margin: 0;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggestions li {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .suggestions:not(:empty) {
+            display: block;
+        }
+
+        .suggestions li:hover {
+            background-color: #e2e8f0;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group .label {
+            margin-bottom: 0;
+            margin-right: 10px;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .last-tee-time {
+            background-color: #ebf8ff;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .last-tee-time-label {
+            font-size: 1.2em;
+            color: #2b6cb0;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .last-tee-time-value {
+            font-size: 2em;
+            color: #2c5282;
+            font-weight: 700;
+        }
+
+        .skeleton-loader {
+            animation: loading 1.5s infinite;
+        }
+
+        .skeleton-row {
+            height: 20px;
+            margin-bottom: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+        }
+
+        .skeleton-last-tee-time {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+        }
+
+        .skeleton-label {
+            height: 24px;
+            width: 60%;
+            background: #e0e0e0;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .skeleton-value {
+            height: 36px;
+            width: 40%;
+            background: #e0e0e0;
+            border-radius: 4px;
+        }
+
+        @keyframes loading {
+            0% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            select, input[type="text"], input[type="date"] {
+                font-size: 14px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .label {
+                font-size: 0.85em;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            h3 {
+                font-size: 1em;
+            }
+
+            .section-title {
+                font-size: 1.1em;
+            }
+
+            .last-tee-time-label {
+                font-size: 1em;
+            }
+
+            .last-tee-time-value {
+                font-size: 1.5em;
+            }
+        }
+
+        #slowFlightNote {
+            margin-top: 10px;
+            font-style: italic;
+            color: #718096;
+        }
+
+        .buy-me-coffee {
+            text-align: center;
+            margin: 30px;
+            padding-top: 20px;
+        }
+
+        .bmc-button {
+            height: 45px !important;
+            width: auto !important;
+            max-width: 170px;
+            transition: transform 0.3s ease;
+        }
+
+        .bmc-button:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .bmc-button {
+                height: 40px !important;
+                max-width: 150px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <img src="final-light.png" alt="Final Light Logo" class="logo">
+        <h3>Tee Time Calculator</h3>
+    </header>
+    <div class="section">
+        <div class="form-group">
+            <label for="datePicker" class="label">Date:</label>
+            <input type="date" id="datePicker">
+        </div>
+        <div class="form-group">
+            <label for="locationSearch" class="label">Golf Course Location:</label>
+            <div class="location-input-container">
+                <input type="text" id="locationSearch" placeholder="City nearest to golf course" autocomplete="off">
+                <button id="clearLocationBtn" class="clear-btn">✕</button>
+                <ul id="suggestions" class="suggestions"></ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="holeCount" class="label">Number of Holes:</label>
+            <select id="holeCount">
+                <option value="18">18 Holes</option>
+                <option value="9">9 Holes</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="flightSize" class="label">Flight Size:</label>
+            <select id="flightSize">
+                <option value="1">1 Person</option>
+                <option value="2">2 People</option>
+                <option value="3">3 People</option>
+                <option value="4">4 People</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="slowFlightDelay" class="label">Slow Flight Factor:</label>
+            <select id="slowFlightDelay">
+                <option value="0">None</option>
+                <option value="2">Slightly Slower than Average (+2 min/hole)</option>
+                <option value="3">Beginner Group (+3 min/hole)</option>
+                <option value="5">Fivesome on every hole (+5 min/hole)</option>
+                <option value="7">Slow Play Day (+7 min/hole)</option>
+                <option value="10">Super Slow Group (+10 min/hole)</option>
+                <option value="15">Tournament Play (+15 min/hole)</option>
+                <option value="-2">Fast Play (-2 min/hole)</option>
+                <option value="-5">Speed Golf (-5 min/hole)</option>
+            </select>
+        </div>
+        <div class="checkbox-group">
+            <label for="includeTwilight" class="label">Include Twilight Time:</label>
+            <input type="checkbox" id="includeTwilight">
+        </div>
+        <div class="checkbox-group">
+            <label for="timeFormat" class="label">Time Format:</label>
+            <input type="checkbox" id="timeFormat" name="timeFormat" checked>
+            <span id="formatLabel">24H</span>
+        </div>
+    </div>
+    <hr>
+    <h2 class="section-title">Location Information</h2>
+    <div class="form-group">
+        <label class="label">Location:</label>
+        <span id="location" class="value">Not set</span>
+    </div>
+    <div id="resultSection">
+        <div id="resultContent" class="hidden">
+            <h2 class="section-title">Date & Time Info</h2>
+            <div class="form-group">
+                <label class="label">Selected date:</label>
+                <span id="selectedDate" class="value"></span>
+            </div>
+            <div class="form-group">
+                <label class="label">Sunset:</label>
+                <span id="sunset" class="value"></span>
+            </div>
+            <div class="form-group">
+                <label class="label">Civil twilight end:</label>
+                <span id="twilightEnd" class="value"></span>
+            </div>
+
+            <h2 class="section-title">Play Details</h2>
+            <div class="form-group">
+                <label class="label">Time per hole:</label>
+                <span id="timePerHole" class="value"></span>
+            </div>
+            <div class="form-group">
+                <label class="label">Total round time:</label>
+                <span id="totalRoundTime" class="value"></span>
+            </div>
+
+            <div class="last-tee-time">
+                <div class="last-tee-time-label">Last Tee Time</div>
+                <div id="lastTeeTime" class="last-tee-time-value">--:--</div>
+            </div>
+        </div>
+        <div id="resultSkeleton" class="skeleton-loader">
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-last-tee-time">
+                <div class="skeleton-label"></div>
+                <div class="skeleton-value"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="futureSection" class="content-section">
+        <div id="futureContent" class="hidden">
+            <h2 class="section-title">Date & Time Info</h2>
+            <div class="row"><span class="label">Selected date:</span> <span id="futureDate" class="value"></span></div>
+            <div class="row"><span class="label">Sunset:</span> <span id="futureSunset" class="value"></span></div>
+            <div class="row"><span class="label">Civil twilight end:</span> <span id="futureTwilightEnd" class="value"></span></div>
+
+            <h2 class="section-title">Play Details</h2>
+            <div class="row"><span class="label">Time per hole:</span> <span id="futureTimePerHole" class="value"></span></div>
+            <div class="row"><span class="label">Total round time:</span> <span id="futureTotalRoundTime" class="value"></span></div>
+
+            <div class="last-tee-time">
+                <div class="last-tee-time-label">Last Tee Time</div>
+                <div id="futureLastTeeTime" class="last-tee-time-value">--:--</div>
+            </div>
+        </div>
+        <div id="slowFlightNote" class="hidden"></div>
+        <div id="futureSkeleton" class="skeleton-loader hidden">
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-last-tee-time">
+                <div class="skeleton-label"></div>
+                <div class="skeleton-value"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="buy-me-coffee">
+    <a href="https://buymeacoffee.com/oliver.mentel" target="_blank" rel="noopener noreferrer">
+        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" class="bmc-button">
+    </a>
+</div>
+<script>
+    const sunriseSunsetApiBase = "https://api.sunrise-sunset.org/json";
+    let lat, lng, timezone;
+    let cachedTimezoneData = null;
+    let lastUsedDate = '';
+    let lastUsedLat = '';
+    let lastUsedLng = '';
+    let lastSunData = null;
+
+    const timeZoneDbApiKey = "B3VY8R50KIYD";
+
+    // DOM element references
+    const locationSearchEl = document.getElementById('locationSearch');
+    const suggestionsEl = document.getElementById('suggestions');
+    const clearLocationBtnEl = document.getElementById('clearLocationBtn');
+    const datePickerEl = document.getElementById('datePicker');
+    const resultContentEl = document.getElementById('resultContent');
+    const resultSkeletonEl = document.getElementById('resultSkeleton');
+
+    function setDatePickerToToday() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const todayString = `${yyyy}-${mm}-${dd}`;
+        datePickerEl.value = todayString;
+        return todayString;
+    }
+
+
+    async function fetchTimeZone(latitude, longitude) {
+        if (cachedTimezoneData) return cachedTimezoneData;
+
+        try {
+            const url = `https://api.timezonedb.com/v2.1/get-time-zone?key=${timeZoneDbApiKey}&format=json&by=position&lat=${latitude}&lng=${longitude}`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.status === "OK") {
+                cachedTimezoneData = data.zoneName;
+                return data.zoneName;
+            } else {
+                throw new Error(data.message || 'Failed to fetch timezone');
+            }
+        } catch (error) {
+            console.warn('Error fetching time zone:', error);
+            return Intl.DateTimeFormat().resolvedOptions().timeZone;
+        }
+    }
+
+    function formatTime(dateStr, use24HourFormat) {
+        const date = new Date(dateStr);
+        let hours = date.getUTCHours();
+        let minutes = date.getUTCMinutes().toString().padStart(2, '0');
+
+        if (use24HourFormat) {
+            return `${hours}:${minutes}`;
+        } else {
+            let hours12 = hours % 12 || 12;
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            return `${hours12}:${minutes} ${ampm}`;
+        }
+    }
+
+    function clearLocation() {
+        locationSearchEl.value = '';
+        document.getElementById("location").textContent = 'Not set';
+        lat = lng = timezone = null;
+        localStorage.removeItem('golfLocation');
+        suggestionsEl.innerHTML = '';
+        resultContentEl.classList.add('hidden');
+
+        // Clear cached sun data
+        lastUsedDate = '';
+        lastUsedLat = '';
+        lastUsedLng = '';
+        lastSunData = null;
+
+        // Clear all sun data from localStorage
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('sunData_')) {
+                localStorage.removeItem(key);
+            }
+        });
+    }
+
+
+    async function handleLocationSelection(suggestion) {
+        locationSearchEl.value = suggestion.display_name;
+        suggestionsEl.innerHTML = '';
+        lat = suggestion.lat;
+        lng = suggestion.lon;
+        timezone = await fetchTimeZone(lat, lng);
+        if (!timezone) {
+            timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            console.warn('Failed to fetch timezone, using local timezone as fallback.');
+        }
+        saveLocationToStorage(suggestion.display_name, suggestion.lat, suggestion.lon, timezone);
+        document.getElementById("location").textContent = suggestion.display_name;
+        await calculateLastTeeTime();
+    }
+
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        if (isNaN(date.getTime())) {
+            return 'Invalid Date';
+        }
+        return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
+    }
+
+
+    function formatDuration(minutes) {
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+        return `${hours}h ${remainingMinutes}min`;
+    }
+
+    function saveSunDataToStorage(date, sunData) {
+        const key = `sunData_${date}_${lat}_${lng}`;
+        localStorage.setItem(key, JSON.stringify(sunData));
+    }
+
+    function loadSunDataFromStorage(date) {
+        const key = `sunData_${date}_${lat}_${lng}`;
+        const storedData = localStorage.getItem(key);
+        return storedData ? JSON.parse(storedData) : null;
+    }
+
+    async function fetchSunData(date) {
+        // First, try to load from localStorage
+        const cachedData = loadSunDataFromStorage(date);
+        if (cachedData) {
+            return cachedData;
+        }
+
+        // If not in localStorage, fetch from API
+        try {
+            const url = `${sunriseSunsetApiBase}?lat=${lat}&lng=${lng}&date=${date}&formatted=0`;
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.status !== "OK") {
+                throw new Error('Failed to fetch sun data');
+            }
+
+            const results = data.results;
+            const sunsetUTC = new Date(results.sunset);
+            const twilightEndUTC = new Date(results.civil_twilight_end);
+
+            const offset = new Date().getTimezoneOffset() * 60000;
+
+            const sunsetLocal = new Date(sunsetUTC.getTime() - offset);
+            const twilightEndLocal = new Date(twilightEndUTC.getTime() - offset);
+
+            const sunData = {
+                sunset: sunsetLocal.toISOString(),
+                civil_twilight_end: twilightEndLocal.toISOString()
+            };
+
+            // Save the fetched data to localStorage
+            saveSunDataToStorage(date, sunData);
+
+            return sunData;
+        } catch (error) {
+            console.error('Error fetching sun data:', error);
+            throw error;
+        }
+    }
+
+
+    function calculatePlayTime(holes, flightSize) {
+        const baseTime9Holes = 135;
+        const baseTime18Holes = 255;
+        const timeSavingsPerHole = {1: 3, 2: 2, 3: 1};
+        const baseTime = holes === 9 ? baseTime9Holes : baseTime18Holes;
+        const timeSaved = (flightSize < 4) ? timeSavingsPerHole[flightSize] * holes : 0;
+        return baseTime - timeSaved;
+    }
+
+    function subtractMinutes(dateStr, minutes) {
+        const date = new Date(dateStr);
+        return new Date(date.getTime() - minutes * 60000).toISOString();
+    }
+
+    function roundToNext10Minutes(dateStr) {
+        const date = new Date(dateStr);
+        let hours = date.getHours();
+        let minutes = Math.floor(date.getMinutes() / 10) * 10;
+        date.setHours(hours, minutes, 0, 0);
+        return date.toISOString();
+    }
+
+    async function calculateLastTeeTime() {
+        if (!lat || !lng || !timezone) {
+            alert('Please set a location first.');
+            return;
+        }
+
+        resultSkeletonEl.classList.remove('hidden');
+        resultContentEl.classList.add('hidden');
+
+        try {
+            const use24HourFormat = document.getElementById("timeFormat").checked;
+            let selectedDate = datePickerEl.value;
+
+            if (!selectedDate) {
+                selectedDate = setDatePickerToToday();
+            }
+
+            // Only fetch new sun data if date or location has changed
+            if (selectedDate !== lastUsedDate || lat !== lastUsedLat || lng !== lastUsedLng) {
+                lastSunData = await fetchSunData(selectedDate);
+                lastUsedDate = selectedDate;
+                lastUsedLat = lat;
+                lastUsedLng = lng;
+            }
+
+            const sunData = lastSunData;
+
+            // Simulate a delay to show the skeleton loader (remove this in production)
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            document.getElementById("selectedDate").textContent = formatDate(selectedDate);
+            document.getElementById("sunset").textContent = formatTime(sunData.sunset, use24HourFormat);
+            document.getElementById("twilightEnd").textContent = formatTime(sunData.civil_twilight_end, use24HourFormat);
+
+            const holes = parseInt(document.getElementById("holeCount").value);
+            const flightSize = parseInt(document.getElementById("flightSize").value);
+            const includeTwilight = document.getElementById("includeTwilight").checked;
+
+
+            let playTimeMinutes = calculatePlayTime(holes, flightSize);
+            // Get the delay from the slow flight factor
+            const slowFlightFactor = parseInt(document.getElementById("slowFlightDelay").value);
+
+            // Apply slow flight factor to the play time
+            if (slowFlightFactor !== 0) {
+                playTimeMinutes += slowFlightFactor * holes;
+            }
+
+
+            const timePerHole = Math.round(playTimeMinutes / holes);
+
+            document.getElementById("timePerHole").textContent = `${timePerHole}min`;
+            document.getElementById("totalRoundTime").textContent = formatDuration(playTimeMinutes);
+
+            let endTimeStr = includeTwilight ? sunData.civil_twilight_end : sunData.sunset;
+            let lastTeeTimeStr = subtractMinutes(endTimeStr, playTimeMinutes);
+            lastTeeTimeStr = roundToNext10Minutes(lastTeeTimeStr);
+
+            document.getElementById("lastTeeTime").textContent = formatTime(lastTeeTimeStr, use24HourFormat);
+
+            // Add a note about the slow flight factor if it's applied
+            const slowFlightNote = document.getElementById("slowFlightNote");
+            if (slowFlightFactor > 0) {
+                slowFlightNote.textContent = `Note: Added ${slowFlightFactor} minutes per hole due to slow play.`;
+                slowFlightNote.classList.remove("hidden");
+            } else {
+                slowFlightNote.classList.add("hidden");
+            }
+
+        } catch (error) {
+            console.error('Error calculating last tee time:', error);
+            alert('An error occurred while calculating the last tee time. Please make sure a valid date is selected and try again.');
+        } finally {
+            resultSkeletonEl.classList.add('hidden');
+            resultContentEl.classList.remove('hidden');
+        }
+    }
+
+
+    function handleLocationInput() {
+        const query = locationSearchEl.value.trim();
+        if (query.length < 3) {
+            suggestionsEl.innerHTML = '';
+            suggestionsEl.style.display = 'none';
+            return;
+        }
+
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+            .then(response => response.json())
+            .then(data => displaySuggestions(data))
+            .catch(error => console.error('Error fetching location suggestions:', error));
+    }
+
+    function displaySuggestions(suggestions) {
+        suggestionsEl.innerHTML = '';
+        if (suggestions.length > 0) {
+            suggestions.forEach(suggestion => {
+                const li = document.createElement('li');
+                li.textContent = suggestion.display_name;
+                li.addEventListener('click', () => handleLocationSelection(suggestion));
+                suggestionsEl.appendChild(li);
+            });
+            suggestionsEl.style.display = 'block';
+        } else {
+            suggestionsEl.style.display = 'none';
+        }
+    }
+
+
+    function saveLocationToStorage(locationName, latitude, longitude, tz) {
+        const locationData = {display_name: locationName, lat: latitude, lng: longitude, timezone: tz};
+        localStorage.setItem('golfLocation', JSON.stringify(locationData));
+    }
+
+    function loadLocationFromStorage() {
+        const storedLocation = localStorage.getItem('golfLocation');
+        if (storedLocation) {
+            const locationData = JSON.parse(storedLocation);
+            lat = locationData.lat;
+            lng = locationData.lng;
+            timezone = locationData.timezone;
+            document.getElementById("location").textContent = locationData.display_name;
+        } else {
+            resultSkeletonEl.classList.add('hidden');
+            resultContentEl.classList.remove('hidden');
+        }
+    }
+
+
+    function debounce(func, delay) {
+        let timeoutId;
+        return function (...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    // Event listeners
+    locationSearchEl.addEventListener('input', debounce(handleLocationInput, 300));
+    datePickerEl.addEventListener('change', calculateLastTeeTime);
+
+    ["timeFormat", "includeTwilight", "holeCount", "flightSize", "slowFlightDelay"].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('change', calculateLastTeeTime);
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        if (e.target !== locationSearchEl && e.target !== suggestionsEl) {
+            suggestionsEl.innerHTML = '';
+            suggestionsEl.style.display = 'none';
+        }
+    });
+
+    clearLocationBtnEl.addEventListener('click', clearLocation);
+
+    // Initial setup
+    document.addEventListener('DOMContentLoaded', () => {
+        loadLocationFromStorage();
+        setDatePickerToToday();
+
+        // Call calculateLastTeeTime only after setting the date and if a location is set
+        if (lat && lng && timezone) {
+            calculateLastTeeTime();
+        }
+
+        const clearLocationBtnEl = document.getElementById('clearLocationBtn');
+        clearLocationBtnEl.addEventListener('click', clearLocation);
+
+        const timeFormatEl = document.getElementById("timeFormat");
+        if (timeFormatEl) {
+            timeFormatEl.addEventListener('change', () => {
+                calculateLastTeeTime();
+                document.getElementById("formatLabel").textContent = timeFormatEl.checked ? "24H" : "12H";
+            });
+        }
+    });
+</script>
+</body>
+</html>
