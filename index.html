@@ -747,6 +747,8 @@
             state.timezone = locationData.timezone;
             elements.location.textContent = locationData.display_name;
             elements.timezone.textContent = state.timezone;
+
+            elements.locationSearch.value = locationData.display_name;
         } else {
             elements.resultSkeleton.classList.add('hidden');
             elements.resultContent.classList.remove('hidden');
