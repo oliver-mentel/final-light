@@ -1,6 +1,6 @@
 # ⛳ Final Light (Tee Time Calculator)
 
-Welcome to the Last Tee Time Calculator! This simple web app helps golfers calculate the last possible tee time for a round of golf based on various parameters including location, number of holes, flight size, and whether to include twilight time.
+Welcome to Final Light the last Tee Time Calculator! This simple web app helps golfers calculate the last possible tee time for a round of golf based on various parameters including location, number of holes, flight size, and whether to include twilight time.
 
 ## Features
 
@@ -16,8 +16,8 @@ To set up this project locally, follow these steps:
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/oliver-mentel/last-tee-time-calculator.git
-    cd last-tee-time-calculator
+    git clone https://github.com/oliver-mentel/final-light.git
+    cd final-light
     ```
 
 2. **Open the HTML file:**
