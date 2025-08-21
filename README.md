@@ -1,4 +1,4 @@
-# ⛳ Last Tee Time Calculator
+# ⛳ Final Light (Tee Time Calculator)
 
 Welcome to the Last Tee Time Calculator! This simple web app helps golfers calculate the last possible tee time for a round of golf based on various parameters including location, number of holes, flight size, and whether to include twilight time.
 
