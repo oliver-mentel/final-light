@@ -371,7 +371,7 @@
 
         try {
             const use24HourFormat = elements.timeFormat.checked;
-            let selectedDate = elements.datePicker.value || setDatePickerToToday();
+            let selectedDate = luxon.DateTime.fromISO(elements.datePicker.value || setDatePickerToToday()).toISODate();
 
             if (selectedDate !== state.lastUsedDate || state.lat !== state.lastUsedLat || state.lng !== state.lastUsedLng) {
                 state.lastSunData = await fetchSunData(selectedDate);
