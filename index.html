@@ -633,14 +633,12 @@
             let playTimeMinutes = calculatePlayTime(holes, flightSize);
             // Get the delay from the slow flight factor
             const slowFlightFactor = parseInt(document.getElementById("slowFlightDelay").value);
+
+            // Apply slow flight factor to the play time
             if (slowFlightFactor !== 0) {
                 playTimeMinutes += slowFlightFactor * holes;
             }
 
-            // Apply slow flight factor to the play time
-            if (slowFlightFactor > 0) {
-                playTimeMinutes += slowFlightFactor * holes;
-            }
 
             const timePerHole = Math.round(playTimeMinutes / holes);
 
