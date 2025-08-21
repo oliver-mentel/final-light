@@ -123,6 +123,7 @@
             border: 1px solid #ddd;
             border-top: none;
             list-style: none;
+            display: none;
             margin: 0;
             padding: 0;
             max-height: 150px;
@@ -135,6 +136,10 @@
             padding: 10px;
             cursor: pointer;
             transition: background-color 0.3s;
+        }
+
+        .suggestions:not(:empty) {
+            display: block;
         }
 
         .suggestions li:hover {
@@ -721,6 +726,7 @@
         const query = locationSearchEl.value.trim();
         if (query.length < 3) {
             suggestionsEl.innerHTML = '';
+            suggestionsEl.style.display = 'none';
             return;
         }
 
@@ -732,13 +738,19 @@
 
     function displaySuggestions(suggestions) {
         suggestionsEl.innerHTML = '';
-        suggestions.forEach(suggestion => {
-            const li = document.createElement('li');
-            li.textContent = suggestion.display_name;
-            li.addEventListener('click', () => handleLocationSelection(suggestion));
-            suggestionsEl.appendChild(li);
-        });
+        if (suggestions.length > 0) {
+            suggestions.forEach(suggestion => {
+                const li = document.createElement('li');
+                li.textContent = suggestion.display_name;
+                li.addEventListener('click', () => handleLocationSelection(suggestion));
+                suggestionsEl.appendChild(li);
+            });
+            suggestionsEl.style.display = 'block';
+        } else {
+            suggestionsEl.style.display = 'none';
+        }
     }
+
 
     function saveLocationToStorage(locationName, latitude, longitude, tz) {
         const locationData = {display_name: locationName, lat: latitude, lng: longitude, timezone: tz};
@@ -782,9 +794,10 @@
     document.addEventListener('click', function (e) {
         if (e.target !== locationSearchEl && e.target !== suggestionsEl) {
             suggestionsEl.innerHTML = '';
+            suggestionsEl.style.display = 'none';
         }
     });
-
+    
     clearLocationBtnEl.addEventListener('click', clearLocation);
 
     // Initial setup
