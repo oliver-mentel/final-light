@@ -13,10 +13,11 @@
     <link href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body id="mainContainer">
+<div class="twilight-gradient"></div>
 <div class="container">
     <header class="header">
-        <img src="final-light.png" alt="Final Light Logo" class="logo">
+        <img id="logoImage" src="final-light.png" alt="Final Light Logo" class="logo">
         <h3>Last Tee Time Calculator</h3>
         <div class="theme-switch-wrapper">
             <label class="theme-switch" for="checkbox">
@@ -30,18 +31,18 @@
             </label>
         </div>
     </header>
-    <div class="section">
+    <div class="form-group">
+        <label for="locationSearch" class="label">Golf Course Location:</label>
+        <div class="location-input-container">
+            <input type="text" id="locationSearch" placeholder="Enter city or golf course name" autocomplete="off">
+            <button id="clearLocationBtn" class="clear-btn">✕</button>
+            <ul id="suggestions" class="suggestions"></ul>
+        </div>
+    </div>
+    <div id="additionalFields" class="hidden">
         <div class="form-group">
             <label for="datePicker" class="label">Date:</label>
             <input type="date" id="datePicker">
-        </div>
-        <div class="form-group">
-            <label for="locationSearch" class="label">Golf Course Location:</label>
-            <div class="location-input-container">
-                <input type="text" id="locationSearch" placeholder="City nearest to golf course" autocomplete="off">
-                <button id="clearLocationBtn" class="clear-btn">✕</button>
-                <ul id="suggestions" class="suggestions"></ul>
-            </div>
         </div>
         <div class="form-group">
             <label for="holeCount" class="label">Number of Holes:</label>
@@ -225,10 +226,29 @@
         if (e.target.checked) {
             document.documentElement.setAttribute('data-theme', 'dark');
             localStorage.setItem('theme', 'dark');
+            updateLogo(true);
         } else {
             document.documentElement.setAttribute('data-theme', 'light');
             localStorage.setItem('theme', 'light');
+            updateLogo(false);
         }
+    }
+
+    function updateLogo(isDarkMode) {
+        const logoImage = document.getElementById('logoImage');
+        if (isDarkMode) {
+            logoImage.src = 'final-light-dark.png';
+        } else {
+            logoImage.src = 'final-light.png';
+        }
+    }
+
+    function showAdditionalFields() {
+        document.getElementById('additionalFields').classList.remove('hidden');
+    }
+
+    function hideAdditionalFields() {
+        document.getElementById('additionalFields').classList.add('hidden');
     }
 
     function setDatePickerToToday() {
@@ -279,6 +299,7 @@
         state.lastUsedLat = '';
         state.lastUsedLng = '';
         state.lastSunData = null;
+        hideAdditionalFields();
 
         Object.keys(localStorage).forEach(key => {
             if (key.startsWith('sunData_')) {
@@ -300,7 +321,8 @@
         elements.timezone.textContent = state.timezone;
         saveLocationToStorage(suggestion.display_name, suggestion.lat, suggestion.lon, state.timezone);
         elements.location.textContent = suggestion.display_name;
-        await calculateLastTeeTime();
+        showAdditionalFields();
+        await calculateLastTeeTime(true);
     }
 
     function formatDate(dateStr) {
@@ -360,14 +382,16 @@
         return date.set({minute: Math.floor(date.minute / 10) * 10, second: 0, millisecond: 0}).toISO();
     }
 
-    async function calculateLastTeeTime() {
+    async function calculateLastTeeTime(showLoader = true) {
         if (!state.lat || !state.lng || !state.timezone) {
             alert('Please set a location first.');
             return;
         }
 
-        elements.resultSkeleton.classList.remove('hidden');
-        elements.resultContent.classList.add('hidden');
+        if (showLoader) {
+            elements.resultSkeleton.classList.remove('hidden');
+            elements.resultContent.classList.add('hidden');
+        }
 
         try {
             const use24HourFormat = elements.timeFormat.checked;
@@ -405,14 +429,27 @@
             elements.totalRoundTime.textContent = luxon.Duration.fromObject({minutes: playTimeMinutes}).toFormat('h\'h\' m\'min\'');
 
             let endTimeStr = includeTwilight ? sunData.civil_twilight_end : sunData.sunset;
-            let lastTeeTimeStr = subtractMinutes(endTimeStr, playTimeMinutes);
-            lastTeeTimeStr = roundToNext10Minutes(lastTeeTimeStr);
 
             let endTime = luxon.DateTime.fromISO(endTimeStr, {zone: 'UTC'}).setZone(state.timezone);
             let lastTeeTime = endTime.minus({minutes: playTimeMinutes});
             lastTeeTime = lastTeeTime.set({minute: Math.floor(lastTeeTime.minute / 10) * 10, second: 0, millisecond: 0});
 
             elements.lastTeeTime.textContent = formatTime(lastTeeTime.toISO(), use24HourFormat, state.timezone);
+
+            // Calculate last tee times for both sunset and twilight
+            const sunsetEndTime = luxon.DateTime.fromISO(sunData.sunset, {zone: 'UTC'}).setZone(state.timezone);
+            const twilightEndTime = luxon.DateTime.fromISO(sunData.civil_twilight_end, {zone: 'UTC'}).setZone(state.timezone);
+
+            const lastTeeSunset = roundToNext10Minutes(sunsetEndTime.minus({minutes: playTimeMinutes}).toISO());
+            const lastTeeTwilight = roundToNext10Minutes(twilightEndTime.minus({minutes: playTimeMinutes}).toISO());
+
+            // Store both times
+            state.lastTeeSunset = lastTeeSunset;
+            state.lastTeeTwilight = lastTeeTwilight;
+
+            // Display the appropriate time based on the checkbox
+            const displayTime = includeTwilight ? lastTeeTwilight : lastTeeSunset;
+            elements.lastTeeTime.textContent = formatTime(displayTime, use24HourFormat, state.timezone);
 
             if (slowFlightFactor > 0) {
                 elements.slowFlightNote.textContent = `Note: Added ${slowFlightFactor} minutes per hole due to slow play.`;
@@ -425,8 +462,20 @@
             console.error('Error calculating last tee time:', error);
             alert('An error occurred while calculating the last tee time. Please make sure a valid date is selected and try again.');
         } finally {
-            elements.resultSkeleton.classList.add('hidden');
-            elements.resultContent.classList.remove('hidden');
+            if (showLoader) {
+                elements.resultSkeleton.classList.add('hidden');
+                elements.resultContent.classList.remove('hidden');
+            }
+        }
+    }
+
+    function updateLastTeeTimeDisplay() {
+        const use24HourFormat = elements.timeFormat.checked;
+        const includeTwilight = elements.includeTwilight.checked;
+        const displayTime = includeTwilight ? state.lastTeeTwilight : state.lastTeeSunset;
+
+        if (displayTime) {
+            elements.lastTeeTime.textContent = formatTime(displayTime, use24HourFormat, state.timezone);
         }
     }
 
@@ -494,6 +543,18 @@
     elements.datePicker.addEventListener('change', calculateLastTeeTime);
     elements.toggleSwitch.addEventListener('change', switchTheme, false);
 
+    // Check for saved user preference, if any, on load of the website
+    const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : null;
+
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        if (currentTheme === 'dark') {
+            elements.toggleSwitch.checked = true;
+            updateLogo(true);
+        }
+    }
+
     document.addEventListener('click', function (e) {
         if (e.target !== elements.locationSearch && e.target !== elements.suggestions) {
             elements.suggestions.innerHTML = '';
@@ -506,25 +567,43 @@
     // Initial setup
     document.addEventListener('DOMContentLoaded', () => {
         loadLocationFromStorage();
-        setDatePickerToToday();
 
         if (state.lat && state.lng && state.timezone) {
-            calculateLastTeeTime();
+            showAdditionalFields();
+            setDatePickerToToday();
+            calculateLastTeeTime(true);
+        } else {
+            hideAdditionalFields();
         }
 
         elements.clearLocationBtn.addEventListener('click', clearLocation);
+        const body = document.body;
+        const mainContainer = document.getElementById('mainContainer');
 
-        elements.timeFormat.addEventListener('change', () => {
-            document.getElementById("formatLabel").textContent = elements.timeFormat.checked ? "24H" : "12H";
-            calculateLastTeeTime();
+        ["holeCount", "flightSize", "slowFlightDelay"].forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('change', () => calculateLastTeeTime(true));
+            }
+        });
+
+        elements.includeTwilight.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                body.classList.add('twilight-effect');
+                mainContainer.classList.add('twilight-effect');
+                document.querySelector('.container').classList.add('twilight-effect');
+            } else {
+                body.classList.remove('twilight-effect');
+                mainContainer.classList.remove('twilight-effect');
+                document.querySelector('.container').classList.remove('twilight-effect');
+            }
+            updateLastTeeTimeDisplay();
         });
 
 
-        ["timeFormat", "includeTwilight", "holeCount", "flightSize", "slowFlightDelay"].forEach(id => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.addEventListener('change', calculateLastTeeTime);
-            }
+        elements.timeFormat.addEventListener('change', () => {
+            document.getElementById("formatLabel").textContent = elements.timeFormat.checked ? "24H" : "12H";
+            updateLastTeeTimeDisplay();
         });
     });
 </script>

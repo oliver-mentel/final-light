@@ -70,17 +70,28 @@ body {
     margin: 0;
     padding: 0;
     font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background 2s ease;
+}
+
+body, #mainContainer {
+    transition: background 0.5s ease;
 }
 
 .container {
+    display: flex;
+    flex-direction: column;
     position: relative;
+    width: 90%;
     max-width: 600px;
     margin: 20px auto;
     padding: 22px;
     background: var(--container-bg);
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition: transform 0.3s, box-shadow 0.5s, height 0.3s ease, background 0.5s ease;
 }
 
 .header {
@@ -93,6 +104,12 @@ body {
     max-width: 200px;
     height: auto;
     margin-bottom: 10px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 20px 0;
 }
 
 /* =========================
@@ -172,6 +189,7 @@ input[type="date"]:focus {
     position: relative;
     width: 100%;
     max-width: 100%;
+    margin-bottom: 20px;
 }
 
 .clear-btn {
@@ -236,6 +254,20 @@ input[type="date"]:focus {
 [data-theme="dark"] .suggestions li:hover {
     background-color: var(--input-bg-dark);
 }
+
+#locationSearch {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #007bff;
+    border-radius: 4px;
+}
+
+#locationSearch:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
 
 /* =========================
    Checkbox Groups
@@ -352,6 +384,11 @@ input[type="checkbox"] {
     color: #a0aec0;
 }
 
+#resultSection, #futureSection {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
 /* =========================
    Buy Me a Coffee Button
    ========================= */
@@ -432,6 +469,76 @@ input:checked + .slider .moon-icon {
     border-radius: 34px;
 }
 
+.twilight-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 130%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff9966, #ff5e62, #6441a5, #2c3e50);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: -1;
+}
+
+.twilight-effect .twilight-gradient {
+    opacity: 1;
+}
+
+.twilight-effect {
+    color: var(--text-color-dark);
+}
+
+.twilight-effect .container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.twilight-effect .value,
+.twilight-effect #slowFlightNote {
+    color: var(--value-color-dark);
+}
+
+.twilight-effect .last-tee-time-value {
+    color: var(--last-tee-time-text-dark);
+}
+
+.twilight-effect .last-tee-time-label {
+    color: var(--section-title-color-dark);
+}
+
+.twilight-effect .last-tee-time {
+    background-color: rgba(44, 82, 130, 0.7);
+}
+
+.twilight-effect .section-title,
+.twilight-effect .label {
+    color: var(--section-title-color-light);
+}
+
+.twilight-effect input[type="text"],
+.twilight-effect input[type="date"],
+.twilight-effect select {
+    background-color: rgba(74, 85, 104, 0.7);
+    color: var(--input-text-dark);
+    border-color: var(--border-color-dark);
+}
+
+.twilight-effect input::placeholder,
+.twilight-effect .clear-btn {
+    color: rgba(226, 232, 240, 0.7);
+}
+
+.twilight-effect select option {
+    background-color: var(--input-bg-dark);
+}
+
+.twilight-effect input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(1.5);
+}
+
 /* =========================
    Date Picker Icon (Dark)
    ========================= */
@@ -470,13 +577,22 @@ input:checked + .slider .moon-icon {
     }
 }
 
+@keyframes sunsetTransition {
+    0% {
+        background: var(--bg-color);
+    }
+    100% {
+        background: linear-gradient(135deg, #ff9966, #ff5e62, #6441a5, #2c3e50);
+    }
+}
+
 /* =========================
    Responsive Styles
    ========================= */
 @media (max-width: 600px) {
     .container {
-        margin: 10px;
         padding: 15px;
+        margin: 10px auto;
     }
 
     select,
