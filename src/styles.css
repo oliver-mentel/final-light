@@ -198,17 +198,30 @@ input[type="date"]:focus {
     top: 50%;
     transform: translateY(-50%);
     z-index: 2;
-    background: none;
-    border: none;
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
     font-size: 18px;
     cursor: pointer;
-    color: #777;
-    padding: 5px;
+    color: #2d3748;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.clear-btn:hover {
+    background: #cbd5e1;
+    border-color: #a0aec0;
 }
 
 [data-theme="dark"] .clear-btn {
     color: #e2e8f0;
-    background: none;
+    background: #2d3748;
+    border: 1px solid #4a5568;
+}
+
+[data-theme="dark"] .clear-btn:hover {
+    background: #4a5568;
+    border-color: #718096;
 }
 
 /* =========================
@@ -529,6 +542,17 @@ input:checked + .slider .moon-icon {
 .twilight-effect input::placeholder,
 .twilight-effect .clear-btn {
     color: rgba(226, 232, 240, 0.7);
+}
+
+.twilight-effect .clear-btn {
+    color: #e2e8f0;
+    background: #2d3748;
+    border: 1px solid #4a5568;
+}
+
+.twilight-effect .clear-btn:hover {
+    background: #4a5568;
+    border-color: #718096;
 }
 
 .twilight-effect select option {
