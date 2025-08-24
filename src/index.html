@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta name="description"
+          content="Calculate the last tee time for your golf course with our Last Tee Time Calculator. Adjust for twilight, flight size, and more.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.final-light.com/">
+    <meta property="og:title" content="Final Light - Last Tee Time Calculator">
+    <meta property="og:description" content="Calculate the last tee time for your golf course with our easy-to-use tool.">
+    <meta property="og:image" content="https://www.final-light.com/final-light.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://www.final-light.com/">
+    <meta name="twitter:title" content="Final Light - Last Tee Time Calculator">
+    <meta name="twitter:description" content="Calculate the last tee time for your golf course with our easy-to-use tool.">
+    <meta name="twitter:image" content="https://www.final-light.com/final-light.png">
+
+    <title>Final Light - Last Tee Time Calculator for Golf Courses</title>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.min.css">
+
+    <link rel="canonical" href="https://www.final-light.com/last-tee-time-calculator">
+</head>
+<body>
+<div class="twilight-gradient"></div>
+<main class="container" id="mainContainer">
+    <header class="header">
+        <img id="logoImage" src="./assets/final-light.png" alt="Final Light Logo" class="logo" loading="lazy">
+        <h3>Last Tee Time Calculator</h3>
+        <div class="theme-switch-wrapper">
+            <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox"/>
+                <div class="slider round">
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </div>
+            </label>
+        </div>
+    </header>
+
+    <form id="calculatorForm">
+        <section class="form-group">
+            <label for="locationSearch" class="label">Golf Course Location:</label>
+            <div class="location-input-container">
+                <input type="text" id="locationSearch" placeholder="Enter city or golf course name" autocomplete="off">
+                <button type="button" id="clearLocationBtn" class="clear-btn" aria-label="Clear location">✕</button>
+                <ul id="suggestions" class="suggestions"></ul>
+            </div>
+        </section>
+
+        <section id="additionalFields" class="hidden">
+            <div class="form-group">
+                <label for="datePicker" class="label">Date:</label>
+                <input type="date" id="datePicker">
+            </div>
+            <div class="form-group">
+                <label for="holeCount" class="label">Number of Holes:</label>
+                <select id="holeCount">
+                    <option value="18">18 Holes</option>
+                    <option value="9">9 Holes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="flightSize" class="label">Flight Size:</label>
+                <select id="flightSize">
+                    <option value="1">1 Person</option>
+                    <option value="2">2 People</option>
+                    <option value="3">3 People</option>
+                    <option value="4">4 People</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="slowFlightDelay" class="label">Slow Flight Factor:</label>
+                <select id="slowFlightDelay">
+                    <option value="0">None</option>
+                    <option value="2">Slightly Slower than Average (+2 min/hole)</option>
+                    <option value="3">Beginner Group (+3 min/hole)</option>
+                    <option value="5">Fivesome on every hole (+5 min/hole)</option>
+                    <option value="7">Slow Play Day (+7 min/hole)</option>
+                    <option value="10">Super Slow Group (+10 min/hole)</option>
+                    <option value="15">Tournament Play (+15 min/hole)</option>
+                    <option value="-2">Fast Play (-2 min/hole)</option>
+                    <option value="-5">Speed Golf (-5 min/hole)</option>
+                </select>
+            </div>
+            <div class="checkbox-group">
+                <label for="includeTwilight" class="label">Include Twilight Time:</label>
+                <input type="checkbox" id="includeTwilight">
+            </div>
+            <div class="checkbox-group">
+                <label for="timeFormat" class="label">Time Format:</label>
+                <input type="checkbox" id="timeFormat" name="timeFormat" checked>
+                <span id="formatLabel">24H</span>
+            </div>
+        </section>
+    </form>
+
+    <hr>
+
+    <section aria-labelledby="locationInfoTitle">
+        <h2 id="locationInfoTitle" class="section-title">Location Information</h2>
+        <div class="form-group">
+            <span class="label">Location:</span>
+            <span id="location" class="value">Not set</span>
+        </div>
+        <div class="form-group">
+            <span class="label">Time Zone:</span>
+            <span id="timezone" class="value">Not set</span>
+        </div>
+    </section>
+
+    <section id="resultSection" aria-live="polite">
+        <div id="resultContent" class="hidden">
+            <h2 class="section-title">Date & Time Info</h2>
+            <div class="form-group">
+                <span class="label">Selected date:</span>
+                <span id="selectedDate" class="value"></span>
+            </div>
+            <div class="form-group">
+                <span class="label">Sunset:</span>
+                <span id="sunset" class="value"></span>
+            </div>
+            <div class="form-group">
+                <span class="label">Civil twilight end:</span>
+                <span id="twilightEnd" class="value"></span>
+            </div>
+
+            <h2 class="section-title">Play Details</h2>
+            <div class="form-group">
+                <span class="label">Time per hole:</span>
+                <span id="timePerHole" class="value"></span>
+            </div>
+            <div class="form-group">
+                <span class="label">Total round time:</span>
+                <span id="totalRoundTime" class="value"></span>
+            </div>
+
+            <div class="last-tee-time">
+                <div class="last-tee-time-label">Last Tee Time</div>
+                <div id="lastTeeTime" class="last-tee-time-value">--:--</div>
+            </div>
+        </div>
+        <div id="resultSkeleton" class="skeleton-loader" aria-hidden="true">
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-last-tee-time">
+                <div class="skeleton-label"></div>
+                <div class="skeleton-value"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="futureSection" class="content-section" aria-live="polite">
+        <div id="futureContent" class="hidden">
+            <h2 class="section-title">Date & Time Info</h2>
+            <div class="row"><span class="label">Selected date:</span> <span id="futureDate" class="value"></span></div>
+            <div class="row"><span class="label">Sunset:</span> <span id="futureSunset" class="value"></span></div>
+            <div class="row"><span class="label">Civil twilight end:</span> <span id="futureTwilightEnd" class="value"></span></div>
+
+            <h2 class="section-title">Play Details</h2>
+            <div class="row"><span class="label">Time per hole:</span> <span id="futureTimePerHole" class="value"></span></div>
+            <div class="row"><span class="label">Total round time:</span> <span id="futureTotalRoundTime" class="value"></span></div>
+
+            <div class="last-tee-time">
+                <div class="last-tee-time-label">Last Tee Time</div>
+                <div id="futureLastTeeTime" class="last-tee-time-value">--:--</div>
+            </div>
+        </div>
+        <div id="slowFlightNote" class="hidden"></div>
+        <div id="futureSkeleton" class="skeleton-loader hidden" aria-hidden="true">
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-last-tee-time">
+                <div class="skeleton-label"></div>
+                <div class="skeleton-value"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="buy-me-coffee">
+    <a href="https://buymeacoffee.com/oliver.mentel" target="_blank" rel="noopener noreferrer">
+        <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" class="bmc-button">
+    </a>
+</footer>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Final Light - Last Tee Time Calculator",
+        "description": "Calculate the last tee time for your golf course with adjustments for twilight, flight size, and more.",
+        "url": "https://www.final-light.com/",
+        "applicationCategory": "SportsApplication",
+        "operatingSystem": "Web"
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
+<script src="./script.min.js" defer></script>
+</body>
+</html>
