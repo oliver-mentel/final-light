@@ -563,6 +563,15 @@ input:checked + .slider .moon-icon {
     filter: invert(1) brightness(1.5);
 }
 
+.twilight-effect .suggestions {
+    background-color: var(--container-bg-dark);
+    border-color: var(--border-color-dark);
+}
+
+.twilight-effect .suggestions li:hover {
+    background-color: var(--input-bg-dark);
+}
+
 /* =========================
    Date Picker Icon (Dark)
    ========================= */
