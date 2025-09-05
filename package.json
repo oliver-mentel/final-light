@@ -4,7 +4,8 @@
   "description": "Welcome to Final Light, the ultimate Tee Time Calculator! This web app helps golfers determine the latest possible tee time for a round of golf based on various parameters including location, number of holes, flight size, and optional twilight time inclusion.",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "terser src/script.js -o src/script.min.js --compress --mangle"
   },
   "keywords": [],
   "author": "",
