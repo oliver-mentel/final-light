@@ -64,106 +64,151 @@
         </section>
 
         <section id="additionalFields" class="hidden">
-            <div class="form-group">
-                <label for="datePicker" class="label">Date:</label>
-                <input type="date" id="datePicker">
+            <!-- BASIC SETTINGS -->
+            <div class="form-section">
+                <h3 class="section-subtitle">Basic Settings</h3>
+
+                <div class="form-group">
+                    <label for="datePicker" class="label">Date:</label>
+                    <input type="date" id="datePicker">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="holeCount" class="label">Number of Holes:</label>
+                        <select id="holeCount">
+                            <option value="18">18 Holes</option>
+                            <option value="9">9 Holes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="flightSize" class="label">Flight Size:</label>
+                        <select id="flightSize">
+                            <option value="1">1 Person</option>
+                            <option value="2">2 People</option>
+                            <option value="3">3 People</option>
+                            <option value="4">4 People</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="handicapContainer" class="form-group">
+                </div>
+
+                <div class="checkbox-group">
+                    <label for="isWalking" class="label">Walking:</label>
+                    <input type="checkbox" id="isWalking" checked>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="holeCount" class="label">Number of Holes:</label>
-                <select id="holeCount">
-                    <option value="18">18 Holes</option>
-                    <option value="9">9 Holes</option>
-                </select>
+
+            <!-- COURSE CONDITIONS -->
+            <div class="form-section">
+                <h3 class="section-subtitle">Course Conditions</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="courseLength" class="label">Course Length:</label>
+                        <select id="courseLength">
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseTerrain" class="label">Course Terrain:</label>
+                        <select id="courseTerrain">
+                            <option value="0">Flat/Rolling (Normal)</option>
+                            <option value="1">Moderately Hilly (+1 min/hole)</option>
+                            <option value="2">Very Hilly (+2 min/hole)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="slowFlightDelay" class="label">Pace Factor:</label>
+                    <select id="slowFlightDelay">
+                        <option value="0">Free Course</option>
+                        <option value="1">Slightly Slower (+1 min/hole)</option>
+                        <option value="2">Beginner Group Ahead (+2 min/hole)</option>
+                        <option value="3">Busy Course (+3 min/hole)</option>
+                        <option value="5">Very Slow Group (+5 min/hole)</option>
+                        <option value="-1">Speed Golf (-1 min/hole)</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="flightSize" class="label">Flight Size:</label>
-                <select id="flightSize">
-                    <option value="1">1 Person</option>
-                    <option value="2">2 People</option>
-                    <option value="3">3 People</option>
-                    <option value="4">4 People</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="slowFlightDelay" class="label">Slow Flight Factor:</label>
-                <select id="slowFlightDelay">
-                    <option value="0">None</option>
-                    <option value="2">Slightly Slower than Average (+2 min/hole)</option>
-                    <option value="3">Beginner Group (+3 min/hole)</option>
-                    <option value="5">Fivesome on every hole (+5 min/hole)</option>
-                    <option value="7">Slow Play Day (+7 min/hole)</option>
-                    <option value="10">Super Slow Group (+10 min/hole)</option>
-                    <option value="15">Tournament Play (+15 min/hole)</option>
-                    <option value="-2">Fast Play (-2 min/hole)</option>
-                    <option value="-5">Speed Golf (-5 min/hole)</option>
-                </select>
-            </div>
-            <div class="checkbox-group">
-                <label for="includeTwilight" class="label">Include Twilight Time:</label>
-                <input type="checkbox" id="includeTwilight">
-            </div>
-            <div class="checkbox-group">
-                <label for="timeFormat" class="label">Time Format:</label>
-                <input type="checkbox" id="timeFormat" name="timeFormat" checked>
-                <span id="formatLabel">24H</span>
+
+            <!-- ADVANCED OPTIONS -->
+            <div class="form-section">
+                <button type="button" id="advancedToggle" class="advanced-toggle">
+                    <span>Advanced Options</span>
+                    <span class="toggle-icon">▼</span>
+                </button>
+
+                <div id="advancedOptions" class="advanced-options hidden">
+                    <div class="checkbox-group">
+                        <label for="includeTwilight" class="label">Include Twilight Time:</label>
+                        <input type="checkbox" id="includeTwilight">
+                        <small class="help-text">Extends play beyond sunset until civil twilight ends</small>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label for="timeFormat" class="label">Time Format:</label>
+                        <input type="checkbox" id="timeFormat" name="timeFormat" checked>
+                        <span id="formatLabel">24H</span>
+                    </div>
+                </div>
             </div>
         </section>
     </form>
 
     <hr>
 
-    <section aria-labelledby="locationInfoTitle">
-        <h2 id="locationInfoTitle" class="section-title">Location Information</h2>
-        <div class="form-group">
-            <span class="label">Location:</span>
-            <span id="location" class="value">Not set</span>
-        </div>
-        <div class="form-group">
-            <span class="label">Time Zone:</span>
-            <span id="timezone" class="value">Not set</span>
-        </div>
-    </section>
-
     <section id="resultSection" aria-live="polite">
         <div id="resultContent" class="hidden">
-            <h2 class="section-title">Date & Time Info</h2>
-            <div class="form-group">
-                <span class="label">Selected date:</span>
-                <span id="selectedDate" class="value"></span>
-            </div>
-            <div class="form-group">
-                <span class="label">Sunset:</span>
-                <span id="sunset" class="value"></span>
-            </div>
-            <div class="form-group">
-                <span class="label">Civil twilight end:</span>
-                <span id="twilightEnd" class="value"></span>
-            </div>
-
-            <h2 class="section-title">Play Details</h2>
-            <div class="form-group">
-                <span class="label">Time per hole:</span>
-                <span id="timePerHole" class="value"></span>
-            </div>
-            <div class="form-group">
-                <span class="label">Total round time:</span>
-                <span id="totalRoundTime" class="value"></span>
-            </div>
-
             <div class="last-tee-time">
                 <div class="last-tee-time-label">Last Tee Time</div>
                 <div id="lastTeeTime" class="last-tee-time-value">--:--</div>
+                <hr class="divider">
+                <div class="last-tee-time-details">
+                    <div class="play-details">
+                        <div class="form-group">
+                            <span class="label">Time per hole:</span>
+                            <span id="timePerHole" class="value"></span>
+                        </div>
+                        <div class="form-group">
+                            <span class="label">Total round time:</span>
+                            <span id="totalRoundTime" class="value"></span>
+                        </div>
+                    </div>
+                    <div class="datetime-details">
+                        <div class="form-group">
+                            <span class="label">Sunset:</span>
+                            <span id="sunset" class="value"></span>
+                        </div>
+                        <div class="form-group">
+                            <span class="label">Civil twilight end:</span>
+                            <span id="twilightEnd" class="value"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div id="resultSkeleton" class="skeleton-loader" aria-hidden="true">
-            <div class="skeleton-row"></div>
-            <div class="skeleton-row"></div>
-            <div class="skeleton-row"></div>
-            <div class="skeleton-row"></div>
-            <div class="skeleton-row"></div>
             <div class="skeleton-last-tee-time">
                 <div class="skeleton-label"></div>
                 <div class="skeleton-value"></div>
+                <div class="skeleton-divider"></div>
+                <div class="skeleton-details">
+                    <div class="skeleton-play-details">
+                        <div class="skeleton-row"></div>
+                        <div class="skeleton-row"></div>
+                    </div>
+
+                    <div class="skeleton-datetime-details">
+                        <div class="skeleton-row"></div>
+                        <div class="skeleton-row"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -185,6 +230,8 @@
             </div>
         </div>
         <div id="slowFlightNote" class="hidden"></div>
+        <div id="weekendNote" class="hidden"></div>
+        <div id="walkingNote" class="hidden"></div>
         <div id="futureSkeleton" class="skeleton-loader hidden" aria-hidden="true">
             <div class="skeleton-row"></div>
             <div class="skeleton-row"></div>
@@ -197,6 +244,7 @@
             </div>
         </div>
     </section>
+
 </main>
 
 <footer class="buy-me-coffee">
